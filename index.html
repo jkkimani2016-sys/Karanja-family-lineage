@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Family Lineage System</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<h2>Family Lineage Login</h2>
+
+<div id="auth-section">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <button onclick="signup()">Sign Up</button>
+</div>
+
+<div id="user-section" style="display:none;">
+  <h3>Welcome</h3>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+  const SUPABASE_URL = "https://mrldzncmwvyjhggejgic.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ybGR6bmNtd3Z5amhnZ2VqZ2ljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5OTc1MDcsImV4cCI6MjA4NjU3MzUwN30.0kH6Av0NT3j8lXehgE2IIFvs1DAV_rkUzujmiWrCySs";
+
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  async function signup() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    const { error } = await supabase.auth.signUp({ email, password });
+
+    if (error) {
+      alert(error.message);
+    } else {
+      alert("Signup successful. You can now login.");
+    }
+  }
+
+  async function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      alert(error.message);
+    } else {
+      document.getElementById('auth-section').style.display = 'none';
+      document.getElementById('user-section').style.display = 'block';
+    }
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    location.reload();
+  }
+
+  supabase.auth.getSession().then(({ data }) => {
+    if (data.session) {
+      document.getElementById('auth-section').style.display = 'none';
+      document.getElementById('user-section').style.display = 'block';
+    }
+  });
+
+</script>
+
+</body>
+</html>
